@@ -1,5 +1,6 @@
 package com.baekgol.reactnativealarmmanager.util;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -11,6 +12,8 @@ import android.os.Vibrator;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+
+import java.util.Objects;
 
 public class AlarmService extends Service {
     private String packageName;
@@ -39,9 +42,9 @@ public class AlarmService extends Service {
         notiIntent.putExtra("minute", intent.getIntExtra("minute", 0));
         notiIntent.putExtra("notiRemovable", intent.getBooleanExtra("notiRemovable", true));
 
-        PendingIntent notiPendingIntent = PendingIntent.getActivity(this, 0, notiIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent notiPendingIntent = PendingIntent.getActivity(this, 0, notiIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+        @SuppressLint("DiscouragedApi") NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                 .setContentTitle(intent.getStringExtra("title"))
                 .setContentText(intent.getStringExtra("text"))
                 .setSmallIcon(getResources().getIdentifier(intent.getStringExtra("icon"), "drawable", packageName))
@@ -55,7 +58,7 @@ public class AlarmService extends Service {
             vibrator.vibrate(VibrationEffect.createWaveform(new long[]{1000, 500}, new int[]{0, 50}, 0));
         }
 
-        int resId = this.getResources().getIdentifier(intent.getStringExtra("sound"), "raw", packageName);
+        @SuppressLint("DiscouragedApi") int resId = this.getResources().getIdentifier(intent.getStringExtra("sound"), "raw", packageName);
         mediaPlayer = MediaPlayer.create(this, resId);
         mediaPlayer.setLooping(intent.getBooleanExtra("soundLoop", true));
         mediaPlayer.start();
@@ -81,7 +84,7 @@ public class AlarmService extends Service {
 
     private Class getMainActivity(){
         Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
-        String className = intent.getComponent().getClassName();
+        String className = Objects.requireNonNull(intent.getComponent()).getClassName();
 
         try {
             return Class.forName(className);

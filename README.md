@@ -8,6 +8,8 @@ Alarm manager for React Native
 
 ## Table of Contents
 
+- [react-native-alarm-manager](#react-native-alarm-manager)
+  - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
     - [Adding the package](#adding-the-package)
       - [npm](#npm)
@@ -102,22 +104,6 @@ protected void onCreate(Bundle savedInstanceState) {
           PackageManager.DONT_KILL_APP);
 }
 
-@Override
-protected ReactActivityDelegate createReactActivityDelegate() {
-  return new ReactActivityDelegate(this, getMainComponentName()){
-    @Nullable
-    @Override
-    protected Bundle getLaunchOptions() {
-      Intent intent = getIntent();
-      Bundle bundle = intent.getExtras();
-
-      if(intent.getBooleanExtra("notiRemovable", true))
-        AlarmModule.stop(this.getContext());
-
-      return bundle;
-    }
-  };
-}
 ```
 
 #### Create resource directory

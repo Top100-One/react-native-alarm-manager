@@ -1,18 +1,15 @@
 package com.baekgol.reactnativealarmmanager.util;
 
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.icu.util.Calendar;
 
 public class AlarmReceiver extends BroadcastReceiver {
-    private AlarmManager alarmManager;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent alarmServiceIntent = new Intent(context, AlarmService.class);
         alarmServiceIntent.putExtra("id", intent.getIntExtra("id", 0));

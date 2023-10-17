@@ -1,6 +1,6 @@
 {
-  "name": "react-native-alarm-manager",
-  "version": "1.2.1",
+  "name": "react-native-alarm-manager-top100-one",
+  "version": "2.1.1",
   "description": "Alarm manager for React Native",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/baekgol/react-native-alarm-manager.git"
+    "url": "git+https://github.com/baekgol/react-native-alarm-manager-top100-one.git"
   },
   "keywords": [
     "react-native",
@@ -17,6 +17,6 @@
   "peerDependencies": {
     "react-native": ">=0.60.0"
   },
-  "author": "baekgol <changu138@gmail.com>",
+  "author": "Top100-One <abdalrhman7mida@gmail.com>",
   "license": "MIT"
 }

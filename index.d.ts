@@ -1,6 +1,6 @@
 import * as React from "react";
 
-declare module "react-native-alarm-manager" {
+declare module "react-native-alarm-manager-top100-one" {
   export interface AlarmType {
     alarm_id: number;
     alarm_time: string;
