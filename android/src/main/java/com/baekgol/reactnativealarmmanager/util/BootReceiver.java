@@ -61,7 +61,7 @@ public class BootReceiver extends BroadcastReceiver {
             alarmIntent.putExtra("vibration", alarm.isAlarmVibration());
             alarmIntent.putExtra("notiRemovable", alarm.isAlarmNotiRemovable());
 
-            PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, alarm.getAlarmId(), alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, alarm.getAlarmId(), alarmIntent, PendingIntent.FLAG_IMMUTABLE);
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmPendingIntent);
         };
 

@@ -42,7 +42,7 @@ public class AlarmService extends Service {
         notiIntent.putExtra("minute", intent.getIntExtra("minute", 0));
         notiIntent.putExtra("notiRemovable", intent.getBooleanExtra("notiRemovable", true));
 
-        PendingIntent notiPendingIntent = PendingIntent.getActivity(this, 0, notiIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent notiPendingIntent = PendingIntent.getActivity(this, 0, notiIntent, PendingIntent.FLAG_IMMUTABLE);
 
         @SuppressLint("DiscouragedApi") NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                 .setContentTitle(intent.getStringExtra("title"))
