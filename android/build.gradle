@@ -12,7 +12,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 33
-
+    namespace 'com.baekgol.reactnativealarmmanager'
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 33
