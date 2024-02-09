@@ -5,7 +5,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.os.IBinder;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -13,6 +16,7 @@ import android.os.Vibrator;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class AlarmService extends Service {
@@ -59,9 +63,37 @@ public class AlarmService extends Service {
         }
 
         @SuppressLint("DiscouragedApi") int resId = this.getResources().getIdentifier(intent.getStringExtra("sound"), "raw", packageName);
-        mediaPlayer = MediaPlayer.create(this, resId);
-        mediaPlayer.setLooping(intent.getBooleanExtra("soundLoop", true));
-        mediaPlayer.start();
+
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                    .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                    .setLegacyStreamType(AudioManager.STREAM_ALARM)
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build());
+
+            // Set the data source for the MediaPlayer
+            mediaPlayer.setDataSource(this, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+
+            // Prepare the MediaPlayer asynchronously
+            mediaPlayer.prepareAsync();
+
+            // Set a listener to start playing when prepared
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    // Start playing the alarm sound
+                    mediaPlayer.start();
+                }
+            });
+
+            // Set looping behavior
+            mediaPlayer.setLooping(true);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return START_STICKY;
     }
