@@ -33,9 +33,14 @@ public class AlarmService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(mediaPlayer!=null) {
-            vibrator.cancel();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            // Stop the existing alarm before starting a new one
             mediaPlayer.stop();
+            mediaPlayer.release(); // Release resources
+            mediaPlayer = null;
+            if (vibrator != null) {
+                vibrator.cancel();
+            }
         }
 
         Intent notiIntent = new Intent(this, getMainActivity());
@@ -61,10 +66,9 @@ public class AlarmService extends Service {
             vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             vibrator.vibrate(VibrationEffect.createWaveform(new long[]{1000, 500}, new int[]{0, 50}, 0));
         }
+//        @SuppressLint("DiscouragedApi") int resId = this.getResources().getIdentifier(intent.getStringExtra("sound"), "raw", packageName);
 
-        @SuppressLint("DiscouragedApi") int resId = this.getResources().getIdentifier(intent.getStringExtra("sound"), "raw", packageName);
-
-        MediaPlayer mediaPlayer = new MediaPlayer();
+        mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
                     .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
