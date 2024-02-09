@@ -80,12 +80,9 @@ public class AlarmService extends Service {
             mediaPlayer.prepareAsync();
 
             // Set a listener to start playing when prepared
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    // Start playing the alarm sound
-                    mediaPlayer.start();
-                }
+            mediaPlayer.setOnPreparedListener(mp -> {
+                // Start playing the alarm sound
+                mediaPlayer.start();
             });
 
             // Set looping behavior
@@ -103,7 +100,7 @@ public class AlarmService extends Service {
         super.onDestroy();
 
         if(mediaPlayer!=null) {
-            if(vibrator!=null) vibrator.cancel();
+            vibrator.cancel();
             mediaPlayer.release();
         }
     }
