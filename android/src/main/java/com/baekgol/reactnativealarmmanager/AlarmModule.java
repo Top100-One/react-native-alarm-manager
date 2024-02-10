@@ -301,13 +301,13 @@ public class AlarmModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void stop(Callback success, Callback fail){
-    Runnable r = new Runnable(){
-      @Override
-      public void run(){
-        Intent alarmServiceIntent = new Intent(reactContext, AlarmService.class);
-        reactContext.stopService(alarmServiceIntent);
-      }
-    };
+    Intent alarmServiceIntent = new Intent(reactContext, AlarmService.class);
+    if (reactContext.stopService(alarmServiceIntent)) {
+      success.invoke("Alarm stopping was successful.");
+    } else {
+      fail.invoke("An error occurred while stopping the alarm.");
+    }
+  }
 
     Thread thread = new Thread(r);
     thread.start();

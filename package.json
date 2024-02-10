@@ -1,6 +1,6 @@
 {
   "name": "react-native-alarm-manager-top100-one",
-  "version": "2.2.1",
+  "version": "2.2.3",
   "description": "Alarm manager for React Native",
   "main": "index.js",
   "scripts": {

@@ -3,9 +3,13 @@ package com.baekgol.reactnativealarmmanager.util;
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -13,6 +17,8 @@ import android.os.Vibrator;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 public class AlarmService extends Service {
@@ -26,12 +32,20 @@ public class AlarmService extends Service {
         super.onCreate();
         packageName = getPackageName();
     }
+    public Uri getRawUri(String filename) {
+        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + File.pathSeparator + File.separator + getPackageName() + "/raw/" + filename);
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(mediaPlayer!=null) {
-            vibrator.cancel();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            // Stop the existing alarm before starting a new one
             mediaPlayer.stop();
+            mediaPlayer.release(); // Release resources
+            mediaPlayer = null;
+            if (vibrator != null) {
+                vibrator.cancel();
+            }
         }
 
         Intent notiIntent = new Intent(this, getMainActivity());
@@ -57,11 +71,44 @@ public class AlarmService extends Service {
             vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             vibrator.vibrate(VibrationEffect.createWaveform(new long[]{1000, 500}, new int[]{0, 50}, 0));
         }
+//        @SuppressLint("DiscouragedApi") int resId = this.getResources().getIdentifier(intent.getStringExtra("sound"), "raw", packageName);
 
-        @SuppressLint("DiscouragedApi") int resId = this.getResources().getIdentifier(intent.getStringExtra("sound"), "raw", packageName);
-        mediaPlayer = MediaPlayer.create(this, resId);
-        mediaPlayer.setLooping(intent.getBooleanExtra("soundLoop", true));
-        mediaPlayer.start();
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                    .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                    .setLegacyStreamType(AudioManager.STREAM_ALARM)
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build());
+
+            // Specify the name of the sound file
+            String soundFileName = intent.getStringExtra("sound");
+
+            // Get the resource identifier for the specified sound file
+            int soundResId = this.getResources().getIdentifier(soundFileName, "raw", packageName);
+
+            // Construct the resource URI for the sound file
+            Uri soundUri = Uri.parse("android.resource://" + packageName + "/" + soundResId);
+
+            // Set the data source for the MediaPlayer
+            mediaPlayer.setDataSource(this, soundUri);
+
+            // Prepare the MediaPlayer asynchronously
+            mediaPlayer.prepareAsync();
+
+            // Set a listener to start playing when prepared
+            mediaPlayer.setOnPreparedListener(mp -> {
+                // Start playing the alarm sound
+                mediaPlayer.start();
+            });
+
+            // Set looping behavior
+            mediaPlayer.setLooping(true);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return START_STICKY;
     }
@@ -71,7 +118,7 @@ public class AlarmService extends Service {
         super.onDestroy();
 
         if(mediaPlayer!=null) {
-            if(vibrator!=null) vibrator.cancel();
+            vibrator.cancel();
             mediaPlayer.release();
         }
     }
