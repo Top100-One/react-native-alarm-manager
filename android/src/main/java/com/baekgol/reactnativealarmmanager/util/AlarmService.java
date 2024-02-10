@@ -82,8 +82,11 @@ public class AlarmService extends Service {
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .build());
 
-            // Get the resource identifier for the sound file
-            @SuppressLint("DiscouragedApi") int soundResId = this.getResources().getIdentifier("sound", "raw", packageName);
+            // Specify the name of the sound file
+            String soundFileName = intent.getStringExtra("sound");
+
+            // Get the resource identifier for the specified sound file
+            int soundResId = this.getResources().getIdentifier(soundFileName, "raw", packageName);
 
             // Construct the resource URI for the sound file
             Uri soundUri = Uri.parse("android.resource://" + packageName + "/" + soundResId);
