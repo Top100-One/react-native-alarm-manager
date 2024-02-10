@@ -3,12 +3,13 @@ package com.baekgol.reactnativealarmmanager.util;
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -16,6 +17,7 @@ import android.os.Vibrator;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -29,6 +31,9 @@ public class AlarmService extends Service {
     public void onCreate() {
         super.onCreate();
         packageName = getPackageName();
+    }
+    public Uri getRawUri(String filename) {
+        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + File.pathSeparator + File.separator + getPackageName() + "/raw/" + filename);
     }
 
     @Override
@@ -77,8 +82,14 @@ public class AlarmService extends Service {
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .build());
 
+            // Get the resource identifier for the sound file
+            @SuppressLint("DiscouragedApi") int soundResId = this.getResources().getIdentifier("sound", "raw", packageName);
+
+            // Construct the resource URI for the sound file
+            Uri soundUri = Uri.parse("android.resource://" + packageName + "/" + soundResId);
+
             // Set the data source for the MediaPlayer
-            mediaPlayer.setDataSource(this, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+            mediaPlayer.setDataSource(this, soundUri);
 
             // Prepare the MediaPlayer asynchronously
             mediaPlayer.prepareAsync();
