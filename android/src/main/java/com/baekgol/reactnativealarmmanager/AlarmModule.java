@@ -112,7 +112,7 @@ public class AlarmModule extends ReactContextBaseJavaModule {
           alarmIntent.putExtra("vibration", alarm.isAlarmVibration());
           alarmIntent.putExtra("notiRemovable", alarm.isAlarmNotiRemovable());
 
-          PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(reactContext, alarm.getAlarmId(), alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+          PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(reactContext, alarm.getAlarmId(), alarmIntent, PendingIntent.FLAG_IMMUTABLE);
           alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmCalender.getTimeInMillis(), alarmPendingIntent);
         }
       }
@@ -194,7 +194,7 @@ public class AlarmModule extends ReactContextBaseJavaModule {
                 reactContext,
                 newAlarm.getAlarmId(),
                 new Intent(reactContext, AlarmReceiver.class),
-                PendingIntent.FLAG_NO_CREATE);
+                PendingIntent.FLAG_IMMUTABLE);
 
         if(existedAlarm!=null && newAlarm.getAlarmId()==existedAlarm.getAlarmId()){
           if(alarmPendingIntent!=null){
@@ -241,7 +241,7 @@ public class AlarmModule extends ReactContextBaseJavaModule {
             alarmIntent.putExtra("vibration", newAlarm.isAlarmVibration());
             alarmIntent.putExtra("notiRemovable", newAlarm.isAlarmNotiRemovable());
 
-            alarmPendingIntent = PendingIntent.getBroadcast(reactContext, newAlarm.getAlarmId(), alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            alarmPendingIntent = PendingIntent.getBroadcast(reactContext, newAlarm.getAlarmId(), alarmIntent, PendingIntent.FLAG_IMMUTABLE);
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmCalender.getTimeInMillis(), alarmPendingIntent);
           }
         }
@@ -273,7 +273,7 @@ public class AlarmModule extends ReactContextBaseJavaModule {
                 reactContext,
                 id,
                 new Intent(reactContext, AlarmReceiver.class),
-                PendingIntent.FLAG_NO_CREATE);
+                PendingIntent.FLAG_IMMUTABLE);
 
         if(alarmPendingIntent!=null) {
           alarmPendingIntent.cancel();

@@ -11,20 +11,20 @@ import java.sql.Time;
 @Dao
 public interface AlarmDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    public long add(AlarmDto dto);
+    long add(AlarmDto dto);
 
     @Query("select * from alarm where alarm_id=:alarmId")
-    public AlarmDto search(int alarmId);
+    AlarmDto search(int alarmId);
 
     @Query("select * from alarm where alarm_time=:alarmTime")
-    public AlarmDto search(Time alarmTime);
+    AlarmDto search(Time alarmTime);
 
     @Query("select * from alarm order by alarm_time")
-    public AlarmDto[] searchAll();
+    AlarmDto[] searchAll();
 
     @Update
-    public int modifyAlarm(AlarmDto dto);
+    int modifyAlarm(AlarmDto dto);
 
     @Query("delete from alarm where alarm_id=:alarmId")
-    public int deleteAlarm(int alarmId);
+    int deleteAlarm(int alarmId);
 }

@@ -16,7 +16,7 @@ import {
 import {TimePicker} from 'react-native-wheel-picker-android';
 import moment from 'moment';
 import Sound from 'react-native-sound';
-import Alarm from 'react-native-alarm-manager';
+import Alarm from 'react-native-alarm-manager-top100-one';
 import {
   loadListModal,
   loadModifyModal,
