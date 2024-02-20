@@ -1,5 +1,6 @@
 package com.baekgol.reactnativealarmmanager;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -318,6 +319,27 @@ public class AlarmModule extends ReactContextBaseJavaModule {
     } catch (InterruptedException e) {
       e.printStackTrace();
       fail.invoke("An error occurred while stopping the alarm.");
+    }
+  }
+
+  private boolean isServiceRunning(Intent intent) {
+    ActivityManager manager = (ActivityManager) getReactApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+    for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
+      if (processInfo.processName.equals(intent.getComponent().getClassName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @ReactMethod
+  public void isAlarmServicePlaying(Callback success, Callback fail) {
+    Intent alarmServiceIntent = new Intent(getReactApplicationContext(), AlarmService.class);
+    boolean isPlaying = AlarmService.isPlayingAlarm();
+    if (isPlaying) {
+      success.invoke("alarm is playing");
+    } else {
+      fail.invoke("alarm sound not playing");
     }
   }
 
