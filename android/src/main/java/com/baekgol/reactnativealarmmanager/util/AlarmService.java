@@ -26,6 +26,7 @@ public class AlarmService extends Service {
     private Vibrator vibrator;
     private MediaPlayer mediaPlayer;
     private final String channelId = "alarm";
+    private static boolean isPlayingAlarm = false; // Flag to indicate if an alarm sound is currently playing
 
     @Override
     public void onCreate() {
@@ -46,6 +47,7 @@ public class AlarmService extends Service {
             if (vibrator != null) {
                 vibrator.cancel();
             }
+            isPlayingAlarm = false; // Set the flag to false when stopping the alarm
         }
 
         Intent notiIntent = new Intent(this, getMainActivity());
@@ -102,12 +104,14 @@ public class AlarmService extends Service {
                 // Start playing the alarm sound
                 mediaPlayer.start();
             });
+            isPlayingAlarm = true; // Set the flag to true when starting the alarm
 
             // Set looping behavior
             mediaPlayer.setLooping(true);
 
         } catch (IOException e) {
             e.printStackTrace();
+            isPlayingAlarm = false; // Set the flag to true when starting the alarm
         }
 
         return START_STICKY;
@@ -120,7 +124,12 @@ public class AlarmService extends Service {
         if(mediaPlayer!=null) {
             vibrator.cancel();
             mediaPlayer.release();
+            isPlayingAlarm = false; // Set the flag to false when destroying the service
         }
+    }
+
+    public static boolean isPlayingAlarm() {
+        return isPlayingAlarm;
     }
 
     @Nullable

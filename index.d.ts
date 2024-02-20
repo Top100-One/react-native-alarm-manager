@@ -44,4 +44,8 @@ declare module "react-native-alarm-manager-top100-one" {
   ): void;
   export function stop(success: messageCallback, fail: messageCallback): void;
   export { _delete as delete };
+  export function isAlarmServicePlaying(
+    success: messageCallback,
+    fail: messageCallback
+  ): void;
 }
